@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.yearup.models.Category;
 import org.yearup.repository.CategoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,30 +19,38 @@ public class CategoryService
 
     public List<Category> getAllCategories()
     {
-        // get all categories
-        return null;
+       return categoryRepository.findAll();
     }
 
     public Category getById(int categoryId)
     {
-        // get category by id
-        return null;
+        return categoryRepository.findById(categoryId).orElse(null);
     }
 
     public Category create(Category category)
     {
-        // create a new category
-        return null;
+        return categoryRepository.save(category);
     }
 
     public Category update(int categoryId, Category category)
     {
-        // update category and return the updated category
-        return null;
+        Category update = getById(categoryId);
+
+        update.setDescription(category.getDescription());
+        update.setName(category.getName());
+
+        return categoryRepository.save(update);
     }
 
     public void delete(int categoryId)
     {
-        // delete category
+        categoryRepository.delete(getById(categoryId));
+    }
+
+    public List<Category> search(String name, String description){
+        List<Category> results = new ArrayList<>(categoryRepository.findAll().stream().filter(c -> name == null || c.getName().contains(name))
+                .filter(c -> description == null || c.getDescription().contains(description)).toList());
+
+        return results;
     }
 }

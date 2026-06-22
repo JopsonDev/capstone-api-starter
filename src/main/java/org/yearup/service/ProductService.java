@@ -26,7 +26,6 @@ public class ProductService
                        .filter(p -> minPrice == null || p.getPrice() >= minPrice)
                        .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
                        .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
-                       .filter(Product::isFeatured)
                        .toList();
     }
 
@@ -40,6 +39,10 @@ public class ProductService
         return productRepository.findById(productId).orElse(null);
     }
 
+    public List<Product> getByCategoryId(int categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
     public Product create(Product product)
     {
         product.setProductId(0);
@@ -49,6 +52,7 @@ public class ProductService
     public Product update(int productId, Product product)
     {
         Product existing = productRepository.findById(productId).orElseThrow();
+        existing.setStock(product.getStock());
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());
         existing.setCategoryId(product.getCategoryId());
