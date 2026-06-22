@@ -25,9 +25,10 @@ public class ShoppingCartController
         // find database user by username
         User user = userService.getByUserName(userName);
         int userId = user.getId();
+        ShoppingCart shoppingCart = shoppingCartService.getByUserId(userId);
 
         // use the shoppingCartService to get all items in the cart and return the cart
-        return null;
+        return shoppingCart;
     }
 
     // add a POST method to add a product to the cart - the url should be
