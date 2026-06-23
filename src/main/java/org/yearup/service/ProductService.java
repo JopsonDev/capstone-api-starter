@@ -52,7 +52,7 @@ public class ProductService
     public Product update(int productId, Product product)
     {
         Product existing = productRepository.findById(productId).orElseThrow();
-        existing.setStock(product.getStock());
+        existing.setStock(product.getStock()); //set stock wasnt here needed to add it that way stock updated
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());
         existing.setCategoryId(product.getCategoryId());

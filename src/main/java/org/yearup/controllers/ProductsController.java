@@ -28,6 +28,7 @@ public class ProductsController
                                 @RequestParam(required = false) Double minPrice,
                                 @RequestParam(required = false) Double maxPrice,
                                 @RequestParam(required = false) String subCategory)
+            //removed filter by featured to make sure everything is shown
     {
         return productService.search(categoryId, minPrice, maxPrice, subCategory);
     }
