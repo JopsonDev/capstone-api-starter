@@ -7,6 +7,8 @@ public class ShoppingCart
 {
     private Map<Integer, ShoppingCartItem> items = new HashMap<>();
 
+
+
     public Map<Integer, ShoppingCartItem> getItems()
     {
         return items;

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.yearup.models.CartItem;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.ShoppingCartItem;
+import org.yearup.models.User;
 import org.yearup.repository.ShoppingCartRepository;
 
 import java.util.List;
@@ -33,8 +34,43 @@ public class ShoppingCartService
        return cart;
     }
 
-    //public ShoppingCart addProduct(ShoppingCart shoppingCart, int productId, int quantity){
-       // ShoppingCartItem shoppingCartItem = new ShoppingCartItem(productService.getById(productId), quantity);
+    public void addProductToCart(int userId, int productId) {
+        if (productService.getById(productId) == null) {
+            System.out.println("No product with that id available");
+            return;
+        }
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+        for (CartItem i : items) {
+            if (i.getProductId() == productId) {
+                i.setQuantity(i.getQuantity() + 1);
+                shoppingCartRepository.save(i);
+                return;
+            }
+        }
+        CartItem cartItem = new CartItem();
+
+        cartItem.setUserId(userId);
+        cartItem.setProductId(productId);
+        cartItem.setQuantity(1);
+
+        shoppingCartRepository.save(cartItem);
+    }
+
+    public void deleteProductFromCart(int userId, int productId){
+        if (productService.getById(productId) == null) {
+            System.out.println("No product");
+            return;
+        }
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+        for (CartItem i : items) {
+            if (i.getProductId() == productId) {
+                i.setQuantity(i.getQuantity() + 1);
+                shoppingCartRepository.save(i);
+                return;
+            }
+        }
+    }
+
 
 
    // }
