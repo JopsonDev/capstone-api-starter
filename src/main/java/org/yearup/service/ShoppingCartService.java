@@ -10,28 +10,25 @@ import org.yearup.repository.ShoppingCartRepository;
 import java.util.List;
 
 @Service
-public class ShoppingCartService
-{
+public class ShoppingCartService {
     // a shopping cart is built from cart rows plus a product lookup for each row
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductService productService;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService)
-    {
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productService = productService;
     }
 
-    public ShoppingCart getByUserId(int userId)
-    {
+    public ShoppingCart getByUserId(int userId) {
         // load the user's cart rows, look up each product, and build the ShoppingCart
-       List<CartItem> items = shoppingCartRepository.findByUserId(userId);
-       ShoppingCart cart = new ShoppingCart();
-       for(CartItem i: items){
-           ShoppingCartItem shoppingCartItem = new ShoppingCartItem(productService.getById(i.getProductId()), i.getQuantity());
-           cart.add(shoppingCartItem);
-       }
-       return cart;
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart cart = new ShoppingCart();
+        for (CartItem i : items) {
+            ShoppingCartItem shoppingCartItem = new ShoppingCartItem(productService.getById(i.getProductId()), i.getQuantity());
+            cart.add(shoppingCartItem);
+        }
+        return cart;
     }
 
     public void addProductToCart(int userId, int productId) {
@@ -56,24 +53,36 @@ public class ShoppingCartService
         shoppingCartRepository.save(cartItem);
     }
 
-    public void deleteProductFromCart(int userId, int productId){
-        if (productService.getById(productId) == null) {
-            System.out.println("No product");
-            return;
-        }
+    public void deleteProductFromCart(int userId, int productId) {
         List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+
         for (CartItem i : items) {
             if (i.getProductId() == productId) {
-                i.setQuantity(i.getQuantity() + 1);
-                shoppingCartRepository.save(i);
+                shoppingCartRepository.delete(i);
                 return;
             }
         }
     }
+
+    public void updateCart(int userId, int productId, int quantity) {
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+
+        for (CartItem i : items) {
+            if (i.getProductId() == productId) {
+                if (quantity <= 0) {
+                    shoppingCartRepository.delete(i);
+                } else {
+                    i.setQuantity(quantity);
+                    shoppingCartRepository.save(i);
+                }
+                return;
+            }
+        }
+    }
+}
 
 
 
    // }
 
     // add additional methods here
-}
