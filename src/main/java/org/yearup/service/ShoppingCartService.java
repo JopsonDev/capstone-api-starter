@@ -79,6 +79,12 @@ public class ShoppingCartService {
             }
         }
     }
+
+    public void clearCart(int userId) {
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+
+        shoppingCartRepository.deleteAll(items);
+    }
 }
 
 
