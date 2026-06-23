@@ -2,10 +2,8 @@ package org.yearup.models;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-
 @Entity
-@Table(name = "order_line_item")
+@Table(name = "order_line_items")
 public class OrderLineItem {
 
     @Id
@@ -20,20 +18,44 @@ public class OrderLineItem {
     private int productId;
 
     @Column(name = "sales_price")
-    private BigDecimal salesPrice = BigDecimal.ZERO;
+    private double salesPrice;
 
     @Column(name = "quantity")
     private int quantity;
 
     @Column(name = "discount")
-    private BigDecimal discount = BigDecimal.ZERO;
+    private double discount;
 
-    public OrderLineItem(int orderLineItemId, int orderId, int productId, BigDecimal salesPrice, int quantity, BigDecimal discount) {
+    public OrderLineItem(int orderLineItemId, int orderId, int productId, double salesPrice, int quantity, double discount) {
         this.orderLineItemId = orderLineItemId;
         this.orderId = orderId;
         this.productId = productId;
         this.salesPrice = salesPrice;
         this.quantity = quantity;
+        this.discount = discount;
+    }
+
+    public void setOrderLineItemId(int orderLineItemId) {
+        this.orderLineItemId = orderLineItemId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public void setSalesPrice(double salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setDiscount(double discount) {
         this.discount = discount;
     }
 
@@ -53,7 +75,7 @@ public class OrderLineItem {
         return productId;
     }
 
-    public BigDecimal getSalesPrice() {
+    public double getSalesPrice() {
         return salesPrice;
     }
 
@@ -61,7 +83,7 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public BigDecimal getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 }
