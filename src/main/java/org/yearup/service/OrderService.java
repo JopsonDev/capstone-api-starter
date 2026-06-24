@@ -25,45 +25,46 @@ public class OrderService {
         this.orderLineItemRepository = orderLineItemRepository;
     }
 
-    public boolean checkCartForEmpty(ShoppingCart cart){
+    public boolean checkCartForEmpty(ShoppingCart cart) {
         if (cart == null || cart.getItems().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot checkout with an empty cart");
         }
         return true;
     }
 
-    public void createOrder(int id) {
-        ShoppingCart cart = shoppingCartService.getByUserId(id);
+    public Order createOrder(int userId) {
+        ShoppingCart cart = shoppingCartService.getByUserId(userId);
 
-        if (checkCartForEmpty(cart)) {
-
-            Order order = new Order();
-            order.setUserId(id);
-            order.setDate(LocalDateTime.now());
-
-            Profile profile = profileService.getById(id);
-            order.setAddress(profile.getAddress());
-            order.setCity(profile.getCity());
-            order.setState(profile.getState());
-            order.setZip(profile.getZip());
-
-            order.setShippingAmount(BigDecimal.ZERO);
-
-            Order savedOrder = orderRepository.save(order);
-
-            for (ShoppingCartItem i : cart.getItems().values()) {
-                OrderLineItem lineItem = new OrderLineItem();
-
-                lineItem.setOrderId(savedOrder.getOrderId());
-                lineItem.setProductId(i.getProductId());
-                lineItem.setSalesPrice(i.getProduct().getPrice());
-                lineItem.setQuantity(i.getQuantity());
-                lineItem.setDiscount(0.00);
-
-                orderLineItemRepository.save(lineItem);
-            }
-
-            shoppingCartService.clearCart(id);
+        if (!checkCartForEmpty(cart)) {
+            throw new IllegalStateException("Cart is empty");
         }
+
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setDate(LocalDateTime.now());
+
+        Profile profile = profileService.getById(userId);
+        order.setAddress(profile.getAddress());
+        order.setCity(profile.getCity());
+        order.setState(profile.getState());
+        order.setZip(profile.getZip());
+
+        order.setShippingAmount(BigDecimal.ZERO);
+
+        Order savedOrder = orderRepository.save(order);
+
+        for (ShoppingCartItem item : cart.getItems().values()) {
+            OrderLineItem lineItem = new OrderLineItem();
+
+            lineItem.setOrderId(savedOrder.getOrderId());
+            lineItem.setProductId(item.getProductId());
+            lineItem.setSalesPrice(item.getProduct().getPrice());
+            lineItem.setQuantity(item.getQuantity());
+            lineItem.setDiscount(0.00);
+
+            orderLineItemRepository.save(lineItem);
+        }
+
+        return savedOrder;
     }
 }

@@ -1,6 +1,8 @@
 package org.yearup.controllers;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +33,12 @@ public class OrderController {
     }
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public void createOrder(Principal principal) {
+    public ResponseEntity<Order> createOrder(Principal principal) {
         User user = userService.getByUserName(principal.getName());
 
-        orderService.createOrder(user.getId());
+        Order order = orderService.createOrder(user.getId());
         shoppingCartService.clearCart(user.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 }
