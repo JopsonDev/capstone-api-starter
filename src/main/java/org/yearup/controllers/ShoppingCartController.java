@@ -49,12 +49,17 @@ public class ShoppingCartController
     // return the updated cart with status 201 Created
     @PostMapping("/products/{productId}")
     @PreAuthorize("hasRole('USER')")
-    public ShoppingCart addProductToCart(@PathVariable int productId, Principal principal) {
+    public ResponseEntity<ShoppingCart> addProductToCart(
+            @PathVariable int productId,
+            Principal principal) {
+
         User user = userService.getByUserName(principal.getName());
 
         shoppingCartService.addProductToCart(user.getId(), productId);
 
-        return shoppingCartService.getCart(user.getId());
+        ShoppingCart cart = shoppingCartService.getCart(user.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
     @DeleteMapping
