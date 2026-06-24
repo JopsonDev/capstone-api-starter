@@ -22,10 +22,12 @@ public class OrderController {
 
     private final OrderService orderService;
     private final UserService userService;
+    private final ShoppingCartService shoppingCartService;
 
-    public OrderController(OrderService orderService, UserService userService) {
+    public OrderController(OrderService orderService, UserService userService, ShoppingCartService shoppingCartService) {
         this.orderService = orderService;
         this.userService = userService;
+        this.shoppingCartService = shoppingCartService;
     }
     @PostMapping
     @PreAuthorize("hasRole('USER')")
@@ -33,5 +35,6 @@ public class OrderController {
         User user = userService.getByUserName(principal.getName());
 
         orderService.createOrder(user.getId());
+        shoppingCartService.clearCart(user.getId());
     }
 }

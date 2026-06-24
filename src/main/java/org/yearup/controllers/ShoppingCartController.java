@@ -39,12 +39,9 @@ public class ShoppingCartController
     // each method in this controller requires a Principal object as a parameter
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ShoppingCart getCart(Principal principal)
-    {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        return shoppingCartService.getByUserId(user.getId());
-
+    public ShoppingCart getCart(Principal principal) {
+        User user = userService.getByUserName(principal.getName());
+        return shoppingCartService.getCart(user.getId());
     }
 
     // add a POST method to add a product to the cart - the url should be
@@ -52,16 +49,12 @@ public class ShoppingCartController
     // return the updated cart with status 201 Created
     @PostMapping("/products/{productId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> addProduct(@PathVariable int productId, Principal principal) {
+    public ShoppingCart addProductToCart(@PathVariable int productId, Principal principal) {
         User user = userService.getByUserName(principal.getName());
-
-        if(productService.getById(productId) == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No product found with id: " + productId);
-        }
 
         shoppingCartService.addProductToCart(user.getId(), productId);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return shoppingCartService.getCart(user.getId());
     }
 
     @DeleteMapping

@@ -1,10 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
-import org.yearup.models.CartItem;
-import org.yearup.models.ShoppingCart;
-import org.yearup.models.ShoppingCartItem;
-import org.yearup.models.User;
+import org.yearup.models.*;
 import org.yearup.repository.ShoppingCartRepository;
 
 import java.util.List;
@@ -32,11 +29,15 @@ public class ShoppingCartService {
     }
 
     public void addProductToCart(int userId, int productId) {
-        if (productService.getById(productId) == null) {
+        Product product = productService.getById(productId);
+
+        if (product == null) {
             System.out.println("No product with that id available");
             return;
         }
+
         List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+
         for (CartItem i : items) {
             if (i.getProductId() == productId) {
                 i.setQuantity(i.getQuantity() + 1);
@@ -44,13 +45,31 @@ public class ShoppingCartService {
                 return;
             }
         }
-        CartItem cartItem = new CartItem();
 
+        CartItem cartItem = new CartItem();
         cartItem.setUserId(userId);
         cartItem.setProductId(productId);
         cartItem.setQuantity(1);
 
         shoppingCartRepository.save(cartItem);
+    }
+
+    public ShoppingCart getCart(int userId) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+
+        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+
+        for (CartItem cartItem : cartItems) {
+            Product product = productService.getById(cartItem.getProductId());
+
+            if (product != null) {
+                ShoppingCartItem item =
+                        new ShoppingCartItem(product, cartItem.getQuantity());
+
+                shoppingCart.add(item);
+            }
+        }
+        return shoppingCart;
     }
 
     public void deleteProductFromCart(int userId, int productId) {
@@ -85,6 +104,8 @@ public class ShoppingCartService {
 
         shoppingCartRepository.deleteAll(items);
     }
+
+
 }
 
 

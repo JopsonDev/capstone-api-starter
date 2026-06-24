@@ -98,6 +98,14 @@ class ShoppingCartService {
         contentDiv.appendChild(cartHeader)
         main.appendChild(contentDiv);
 
+        const checkoutButton = document.createElement("button");
+        checkoutButton.classList.add("btn");
+        checkoutButton.classList.add("btn-primary"); // or btn-success if your CSS has it
+        checkoutButton.innerText = "Checkout";
+        checkoutButton.addEventListener("click", () => this.checkout());
+
+        cartHeader.appendChild(checkoutButton);
+
         // let parent = document.getElementById("cart-item-list");
         this.cart.items.forEach(item => {
             this.buildItem(item, contentDiv)
@@ -184,6 +192,28 @@ class ShoppingCartService {
         catch (e) {
 
         }
+    }
+    checkout()
+    {
+        const url = `${config.baseUrl}/orders`;
+
+        axios.post(url, {})
+            .then(response => {
+                this.cart = {
+                    items: [],
+                    total: 0
+                };
+
+                this.updateCartDisplay();
+                this.loadCartPage();
+            })
+            .catch(error => {
+                const data = {
+                    error: "Checkout failed."
+                };
+
+                templateBuilder.append("error", data, "errors");
+            });
     }
 }
 
