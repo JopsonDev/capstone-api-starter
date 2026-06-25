@@ -10,8 +10,11 @@ import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
@@ -44,5 +47,46 @@ class ProductServiceTest {
         assertEquals(2, results.size());
         assertTrue(results.contains(featuredProduct));
         assertTrue(results.contains(nonFeaturedProduct));
+    }
+
+    @Test
+    void update_ShouldUpdateAllValues_WithNewValues(){
+        //Arrange
+        Product oldProduct = new Product();
+        oldProduct.setStock(10);
+        oldProduct.setName("Wireless Mouse");
+        oldProduct.setPrice(24.99);
+        oldProduct.setCategoryId(3);
+        oldProduct.setDescription("Ergonomic wireless mouse with USB receiver.");
+        oldProduct.setSubCategory("Computer Accessories");
+        oldProduct.setFeatured(false);
+        oldProduct.setImageUrl("images/wireless-mouse.jpg");
+
+        Product updatedProduct = new Product();
+        updatedProduct.setStock(35);
+        updatedProduct.setName("Wireless Gaming Mouse");
+        updatedProduct.setPrice(39.99);
+        updatedProduct.setCategoryId(5);
+        updatedProduct.setDescription("High-performance gaming mouse with customizable RGB lighting.");
+        updatedProduct.setSubCategory("Gaming Peripherals");
+        updatedProduct.setFeatured(true);
+        updatedProduct.setImageUrl("images/wireless-gaming-mouse.jpg");
+
+        Mockito.when(productRepository.findById(1)).thenReturn(Optional.of(oldProduct));
+
+        //Act
+        Product result = productService.update(1, updatedProduct);
+
+        //Assert
+        assertEquals(updatedProduct.getStock(), result.getStock());
+        assertEquals(updatedProduct.getName(), result.getName());
+        assertEquals(updatedProduct.getPrice(), result.getPrice());
+        assertEquals(updatedProduct.getCategoryId(), result.getCategoryId());
+        assertEquals(updatedProduct.getDescription(), result.getDescription());
+        assertEquals(updatedProduct.getSubCategory(), result.getSubCategory());
+        assertEquals(updatedProduct.isFeatured(), result.isFeatured());
+        assertEquals(updatedProduct.getImageUrl(), result.getImageUrl());
+
+        verify(productRepository).save(oldProduct);
     }
 }

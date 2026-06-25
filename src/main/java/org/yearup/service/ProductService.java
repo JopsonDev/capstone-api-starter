@@ -60,7 +60,8 @@ public class ProductService
         existing.setSubCategory(product.getSubCategory());
         existing.setFeatured(product.isFeatured());
         existing.setImageUrl(product.getImageUrl());
-        return productRepository.save(existing);
+        productRepository.save(existing);
+        return existing;
     }
 
     public void delete(int productId)
