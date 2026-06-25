@@ -12,13 +12,6 @@ This application is a full-stack e-commerce web application that allows users to
 - As a user I want to be able to add multiple things to my cart this way i can check out with everything i want
 - As a user I want to be able to check out and leave with my items this way i can take what i want with me
 
-
-## Setup
-
-## Setup
-
-To run this application locally, follow these steps:
-
 ### Prerequisites
 
 - Java 17 or later
