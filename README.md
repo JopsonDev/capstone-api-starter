@@ -104,7 +104,6 @@ The following resources were used throughout the development of this project:
 ## Team Members
 
 - Mason Jopson - All Project code
-- Raymond - All Starter code
 
 ## Thanks
 

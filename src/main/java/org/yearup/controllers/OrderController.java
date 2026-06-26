@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yearup.models.Order;
-import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.OrderService;
 import org.yearup.service.ShoppingCartService;

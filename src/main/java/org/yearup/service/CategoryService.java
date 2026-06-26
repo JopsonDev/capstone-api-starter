@@ -32,8 +32,7 @@ public class CategoryService
         return categoryRepository.save(category);
     }
 
-    public Category update(int categoryId, Category category)
-    {
+    public Category update(int categoryId, Category category) {
         Category update = getById(categoryId);
 
         update.setDescription(category.getDescription());
